@@ -1,0 +1,198 @@
+/*Base stylesheet for Pocket Healer game*/
+
+.healthbar{
+	background-color:red;
+	width:100px;
+	height:20px;
+	display:block;
+	position:relative;
+	cursor:pointer;
+}
+.healthcurrent{
+	width:100px;
+	height:20px;
+	background-color:green;
+	display: inline-block;
+	position:absolute;
+	left:0px;
+	top:0px;
+}
+
+.shield{
+	width:0px;
+	height:20px;
+	background-color:#aaaaff;
+	display: inline-block;
+	position:absolute;
+	left:0px;
+	top:0px;
+	opacity:.8;
+	z-index:5;
+}
+
+.soft-target{
+	opacity:.8;
+}
+
+.hero.hard-target{
+	border:2px solid yellow;
+}
+
+#heroes{
+	display:block;
+	position:relative;
+}
+
+.hero{
+	display:inline-block;
+	margin:5px;
+	border:2px solid white;
+}
+
+.hero-label{
+
+}
+
+#boss-message{
+	display:block;
+	position:relative;
+	padding:10px;
+	height:20px;
+}
+
+#castbar{
+	width:150px;
+	height:30px;
+	border:1px solid #000;
+	position:relative;
+	padding:5px;
+	display:block;
+}
+
+#currentcb{
+	background-color:orange;
+	width:0px;
+	height:100%;
+	display:block;
+}
+
+#manabar{
+	width:150px;
+	height:30px;
+	border:1px solid #000;
+	position:relative;
+	padding:5px;
+	margin-top:5px;
+	display:block;
+}
+
+#currentmb{
+	background-color:blue;
+	width:100%;
+	height:100%;
+	display:block;
+}
+
+.skill-cooldown{
+	background-color:black;
+	width:100%;
+	height:0%;
+	display:block;
+	opacity:.2;
+	border-radius:5px;
+}
+
+.menu-button{
+	width:100px;
+	height:20px;
+	border:1px solid #000;
+	margin:10px;
+	text-align:center;
+	cursor:pointer;
+	font-size:16px;
+}
+
+#skillbar{
+	width:300px;
+	height:75px;
+}
+
+.skill{
+	width:30px;
+	height:30px;
+	border-radius:5px;
+	border:1px solid #000;
+	margin:5px;
+	display:inline-block;
+	cursor:pointer;
+}
+
+.skill-label{
+	width:30px;
+	height:30px;
+	display:inline;
+	position:absolute;
+	padding:5px;
+}
+
+#game-over{
+	width:300px;
+	height:50px;
+	font-size:20px;
+	display:none;
+}
+
+#spell-tooltip{
+	position:absolute;
+	z-index:100;
+	width:200px;
+	height:150px;
+	text-align:center;
+	display:none;
+	background-color:#888888;
+	border:1px solid #eee;
+}
+
+#spell-name{
+	margin:10px;
+	display:inline-block;
+	position:relative;
+	width:150px;
+	height:10px;
+	font-size:16px;
+	color:#eeeeee;
+}
+
+#spell-description{
+	margin:10px;
+	display:inline-block;
+	position:relative;
+	width:150px;
+	height:70px;
+	color:#bbbbdd;
+}
+
+.buff{
+	left:4px;
+	top:4px;
+	position: relative;
+	margin-left:2px;
+	display: inline-block;
+	border: 1px solid #000;
+	width:10px;
+	height:10px;
+	background-size: 10px 10px;
+	z-index:10;
+}
+
+#game{
+	display:none;
+}
+
+#how-to-play{
+	display:none;
+}
+
+#how-to-play-text{
+	width:600px;
+}

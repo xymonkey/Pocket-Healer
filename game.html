@@ -1,0 +1,77 @@
+<!--Markup for Pocket Healer game.-->
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="./CSS/style.css"/>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="./JS/game.js"></script>
+	<script src="./JS/buff.js"></script>
+	<script src="./JS/player.js"></script>
+	<script src="./JS/util.js"></script>
+	<script src="./JS/input.js"></script>
+	<script src="./JS/skills.js"></script>
+	<script src="./JS/state.js"></script>
+	<script src="./JS/boss.js"></script>
+	<script src="./JS/heroes.js"></script>
+</head>
+<body>
+	<div id="start-menu">
+		<div id="start-button" class="menu-button">Start Game</div>
+		<div id="how-to-play-button" class="menu-button">How to Play</div>
+	</div>
+	<div id="how-to-play">
+		<div id="how-to-play-text">
+			<p>You are a magician trained in the healing arts who is trying to make a name for yourself. Since you are rather weak yourself, you hope to accomplish this by tagging along with your much stronger friends and trying to keep them alive as they slaughter the most powerful boss monsters in the land for loot and glory.</p>
+			<p>To cast a spell, first select a friendly target by clicking their health bar. The target will be highlighted with a yellow box. Next, click on a spell or type the key corresponding to the spell icon (for example, the first spell defaults to the "1" key). You should cast the spell and see your target's health bar affected accordingly once the spell is cast. Press escape to unselect a target.</p>
+			<p>Advanced healers may prefer to use mouseover targeting. Simply hover over your target with the mouse and press the key associated with the spell you want to cast. This allows you to switch targets and cast faster, but may take some getting used to.
+			<p>When you start the game, the play area is divided into 5 areas:</p>
+			<ul>
+				<li>1. The boss's health meter. The bigger the red portion of the bar is, the more damage your friends have done to the boss and the closer you are to winning!</li>
+				<li>2. Your friends' life meters. As the boss lashes out at your friends, they will take damage and their bars will gradually turn from green to red. If a friend's health bar turns completely red, they will die! Make sure to keep them in the green with healing spells so they don't!</li>
+				<li>3. Your spell bar. These abilities will help you keep your friends alive until the boss is dead. They can have various affects that are direct or subtle (see below for some examples). Some spells have a cooldown that will limit how often you can cast them. When a spell is on cooldown, it will be indicated by a gray meter covering the spell. Once the meter has filled up, you can cast the spell again. You can also see spell information by mousing over the spell icon.</li>
+				<li>4. Your cast bar. Some of your skills will be cast instantaneously while others take time to conjure their magical energies. If you cast a spell with a cast time, this bar will fill up to indicate how long the spell will take to cast. Once it is filled, the spell will be cast and you will be able to cast another spell.</li>
+				<li>5. Your mana bar. Mana is magical energy used to cast spells. Some spells require more energy than others, so you will need to keep a close eye on this to make sure you don't wear yourself out early.
+			</ul>
+			<p>Here's some examples of the spells you will use to protect your friends:</p>
+			<ul>
+				<li>Heal: The most basic healing spell. It uses mana very efficiently, but may not be strong enough to save your friends in an emergency.</li>
+				<li>Flash Heal: A more potent and quicker version of heal. Very good at saving a life, but it will eat through your mana reserves quickly.</li>
+				<li>Renew: This spell heals a hero in small bursts over an extended period. A good balance of efficiency and power, but usually not enough to keep people alive by itself.</li>
+				<li>Shield: Place a shield on a hero that absorbs a set amount of damage before breaking or until its enchantment wears off. The shield is indicated by a blue bar over a hero's health bar. A powerful life saving tool that should be used sparingly.
+			</ul>
+		</div>
+		<div id="help-back-to-start" class="menu-button">Back</div>
+	</div>
+	<div id="game">
+		<div id="boss" class="boss">
+			<div id="boss-label" class="boss-label">Boss</div>
+			<div id="bosshb" class="healthbar">
+				<span id="bosshc" class="healthcurrent"></span>
+			</div>
+		</div>
+		<div id="boss-message"></div>
+		<div id="heroes">
+		</div>
+		<div id="skillbar">
+			<span id="skill1" class="skill"><span id="skill1-label" class="skill-label">1</span><span id="skill1cooldown" class="skill-cooldown"></span></span>
+			<span id="skill2" class="skill"><span id="skill2-label" class="skill-label">2</span><span id="skill2cooldown" class="skill-cooldown"></span></span>
+			<span id="skill3" class="skill"><span id="skill3-label" class="skill-label">3</span><span id="skill3cooldown" class="skill-cooldown"></span></span>
+			<span id="skill4" class="skill"><span id="skill4-label" class="skill-label">4</span><span id="skill4cooldown" class="skill-cooldown"></span></span>
+		</div>
+		<div id="castbar">
+			<span id="currentcb" class="currentcb"></span>
+		</div>
+		<div id="manabar">
+			<span id="currentmb" class="currentmb"></span>
+		</div>
+		<div id="game-over">
+			<div id="game-over-message"></div>
+			<div id="restart" class="menu-button">Restart?</div>
+			<div id="game-back-to-start" class="menu-button">Back to menu</div>
+		</div>
+		<div id="spell-tooltip">
+			<div id="spell-name"></div>
+			<div id="spell-description"></div>
+		</div>
+	</div>
+</body>
+</html>
