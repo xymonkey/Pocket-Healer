@@ -5,4 +5,6 @@ Pocket Healer is a game where your goal is to defeat boss monsters by supporting
 
 Special thanks to Dmitry Volevdoz, whose game Little Healer features a similar premise and inspired this game. Little Healer is available on the Android app store.
 
+Design and programming by Steven Rayl. Art by Kevin Broomall with additional assets from http://opengameart.org/content/painterly-spell-icons (originally created by Eleazzaar).
+
 If you're interested in contributing to this project or would like to know more about it, please contact me at stevenmrayl@gmail.com
