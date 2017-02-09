@@ -2,12 +2,18 @@
    but as hero functionality becomes more complex we should consider creating a seperate hero module/constructor.*/
    
 game = (function(game){
+	var WARRIOR_SPRITE = 0,
+		ARCHER_SPRITE = 1,
+		NECROMANCER_SPRITE = 2,
+		WIZARD_SPRITE = 3,
+		ASSASSIN_SPRITE = 4;
 	
 	game.heroes = game.heroes || {};
 	var heroes = [];
 	
 	function init (numHeroes)
 	{
+		var spriteName;
 		//Because arrays with references in other objects are not cleared when using "array = []", we manually set length to 0 to reset the array after starting a new game.
 		heroes.length = 0;
 		cleanup();
@@ -36,6 +42,22 @@ game = (function(game){
 			shieldBar.id = "hero" + (i+1) + "shield";
 			shieldBar.className = "shield";
 			
+			//Create hero sprite based on hero number.
+			var heroSprite = document.createElement("div");
+			heroSprite.id = "hero" + (i+1) + "sprite";
+			
+			switch (i)
+			{
+				case WARRIOR_SPRITE:spriteName = "sprite-warrior";break;
+				case ARCHER_SPRITE:spriteName = "sprite-archer";break;
+				case NECROMANCER_SPRITE:spriteName = "sprite-necro";break;
+				case WIZARD_SPRITE:spriteName = "sprite-wizard";break;
+				case ASSASSIN_SPRITE:spriteName = "sprite-assassin";break;
+				default:;
+			}
+			
+			heroSprite.className = spriteName;
+			
 			//Configure hero variables and associate with DOM elements.
 			
 			currentHero.health=100;
@@ -54,6 +76,7 @@ game = (function(game){
 			healthbar.appendChild(currentHealth);
 			currentHero.appendChild(label);
 			currentHero.appendChild(healthbar);
+			currentHero.appendChild(heroSprite);
 			
 			document.getElementById("heroes").appendChild(currentHero);
 			

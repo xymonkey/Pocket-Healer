@@ -151,8 +151,10 @@ game = (function(game){
 			if (softTarget && $(softTarget).removeClass)
 			{
 				$(softTarget).removeClass("soft-target");
+				$(softTarget).children(".healthbar").removeClass("soft-target-highlight");
 			}
 			target.addClass("soft-target");
+			target.children(".healthbar").addClass("soft-target-highlight");
 			softTarget = target.get(0);
 		}
 	}
@@ -176,8 +178,10 @@ game = (function(game){
 			if (hardTarget && $(hardTarget).removeClass)
 			{
 				$(hardTarget).removeClass("hard-target");
+				$(hardTarget).children(".healthbar").removeClass("hard-target-highlight");
 			}
 			target.addClass("hard-target");
+			target.children(".healthbar").addClass("hard-target-highlight");
 			hardTarget = target.get(0);
 		}
 	}
@@ -201,6 +205,7 @@ game = (function(game){
 			if (softTarget && $(softTarget).removeClass)
 			{
 				$(softTarget).removeClass("soft-target");
+				$(softTarget).children(".healthbar").removeClass("soft-target-highlight");
 			}
 			softTarget = null;
 		}
@@ -227,6 +232,7 @@ game = (function(game){
 		if (hardTarget && $(hardTarget).removeClass)
 		{
 			$(hardTarget).removeClass("hard-target");
+			$(hardTarget).children(".healthbar").removeClass("hard-target-highlight");
 			hardTarget = null;
 		}
 	}
