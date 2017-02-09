@@ -7,6 +7,7 @@
 	display:block;
 	position:relative;
 	cursor:pointer;
+	border:2px solid white;
 }
 .healthcurrent{
 	width:100px;
@@ -30,11 +31,11 @@
 	z-index:5;
 }
 
-.soft-target{
+.soft-target-highlight{
 	opacity:.8;
 }
 
-.hero.hard-target{
+.hard-target-highlight{
 	border:2px solid yellow;
 }
 
@@ -45,8 +46,7 @@
 
 .hero{
 	display:inline-block;
-	margin:5px;
-	border:2px solid white;
+	/*margin:5px;*/
 }
 
 .hero-label{
@@ -173,8 +173,8 @@
 }
 
 .buff{
-	left:4px;
-	top:4px;
+	left:2px;
+	top:2px;
 	position: relative;
 	margin-left:2px;
 	display: inline-block;
@@ -195,4 +195,39 @@
 
 #how-to-play-text{
 	width:600px;
+}
+
+.sprite-warrior{
+	width:64px;
+	height:64px;
+	background-image:url("../Images/Char/warrior.gif");
+	background-size:64px 64px;
+}
+
+.sprite-archer{
+	width:64px;
+	height:64px;
+	background-image:url("../Images/Char/archer.gif");
+	background-size:64px 64px;
+}
+
+.sprite-wizard{
+	width:64px;
+	height:64px;
+	background-image:url("../Images/Char/wizard.gif");
+	background-size:64px 64px;
+}
+
+.sprite-assassin{
+	width:64px;
+	height:64px;
+	background-image:url("../Images/Char/assasin.gif");
+	background-size:64px 64px;
+}
+
+.sprite-necro{
+	width:64px;
+	height:64px;
+	background-image:url("../Images/Char/necro2.gif");
+	background-size:64px 64px;
 }
