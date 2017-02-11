@@ -231,3 +231,9 @@
 	background-image:url("../Images/Char/necro2.gif");
 	background-size:64px 64px;
 }
+
+#boss-sprite{
+	width:64px;
+	height:64px;
+	background-size:64px 64px;
+}

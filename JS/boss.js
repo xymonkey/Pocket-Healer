@@ -29,6 +29,7 @@ game = (function(game){
 		{
 			boss.name = "Warwylf";
 			document.getElementById("boss-label").innerHTML = boss.name;
+			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
 		}
 
 		if (game.state.isInProgress())
