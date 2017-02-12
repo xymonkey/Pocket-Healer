@@ -38,8 +38,8 @@ game = (function(game){
 			
 			if (typeof(boss.health) == "undefined")
 			{
-				boss.health = 300;
-				boss.maxHealth = 300;
+				boss.health = 400;
+				boss.maxHealth = 400;
 				boss.healthbar = document.getElementById("bosshc");
 			}
 			updateHealthbar();
@@ -96,9 +96,15 @@ game = (function(game){
 		boss.healthbar.style.width = parseInt((boss.health/boss.maxHealth)*100) + "%";
 	}
 	
+	function getBossName ()
+	{
+		return boss.name;
+	}
+	
 	game.boss.init = initBoss;
 	game.boss.isBossAlive = isBossAlive;
 	game.boss.damageBoss = damageBoss;
+	game.boss.getBossName = getBossName;
 	
 	return game;
 })(game || {});
