@@ -2,89 +2,158 @@
    but as hero functionality becomes more complex we should consider creating a seperate hero module/constructor.*/
    
 game = (function(game){
+	//Sprite types.
 	var WARRIOR_SPRITE = 0,
 		ARCHER_SPRITE = 1,
 		NECROMANCER_SPRITE = 2,
 		WIZARD_SPRITE = 3,
 		ASSASSIN_SPRITE = 4;
+		
+	//Role types.
+	var DPS_ROLE = 0,
+		TANK_ROLE = 1,
+		HEALER_ROLE = 2;
 	
 	game.heroes = game.heroes || {};
 	var heroes = [];
 	
-	function init (numHeroes)
+	function init (bossName)
 	{
 		var spriteName;
 		//Because arrays with references in other objects are not cleared when using "array = []", we manually set length to 0 to reset the array after starting a new game.
 		heroes.length = 0;
 		cleanup();
-		for (i=0;i<numHeroes;i++)
+		if (!bossName)
 		{
-			//Create hero div.
-			var currentHero = document.createElement("span");
-			currentHero.id = "hero" + (i+1);
-			currentHero.className = "hero";
-			
-			//Create hero label.
-			var label = document.createElement ("div");
-			label.id = "hero" + (i+1) + "-label";
-			label.className = "hero-label";
-			
-			//Create hero healthbar.
-			var healthbar = document.createElement ("div");
-			healthbar.id = "hero" + (i+1) + "hb";
-			healthbar.className = "healthbar";
-			
-			var currentHealth = document.createElement("span");
-			currentHealth.id = "hero" + (i+1) + "hc";
-			currentHealth.className = "healthcurrent";
-			
-			var shieldBar = document.createElement("span");
-			shieldBar.id = "hero" + (i+1) + "shield";
-			shieldBar.className = "shield";
-			
-			//Create hero sprite based on hero number.
-			var heroSprite = document.createElement("div");
-			heroSprite.id = "hero" + (i+1) + "sprite";
-			
-			switch (i)
-			{
-				case WARRIOR_SPRITE:spriteName = "sprite-warrior";break;
-				case ARCHER_SPRITE:spriteName = "sprite-archer";break;
-				case NECROMANCER_SPRITE:spriteName = "sprite-necro";break;
-				case WIZARD_SPRITE:spriteName = "sprite-wizard";break;
-				case ASSASSIN_SPRITE:spriteName = "sprite-assassin";break;
-				default:;
-			}
-			
-			heroSprite.className = spriteName;
-			
-			//Configure hero variables and associate with DOM elements.
-			
-			currentHero.health=100;
-			currentHero.maxHealth=100;
-
-			currentHero.healthbar=currentHealth;
-			currentHero.shieldBar = shieldBar;
-			
-			currentHero.alive = true;
-			currentHero.damage = 1;
-			currentHero.buffs = [];
-			currentHero.tempStats = [];
-			
-			//Add to DOM and push to array.
-			healthbar.appendChild(shieldBar);
-			healthbar.appendChild(currentHealth);
-			currentHero.appendChild(label);
-			currentHero.appendChild(healthbar);
-			currentHero.appendChild(heroSprite);
-			
-			document.getElementById("heroes").appendChild(currentHero);
-			
-			heroes.push(currentHero);
-			updateHealthbar(currentHero);
+			bossName = game.boss.getBossName();
+		}
+		
+		switch (bossName)
+		{
+			case "Warwylf":
+				for (var i = 0; i < 5; i++)
+				{
+					createHero ();
+				}
+				break;
+			default:
+				for (var i = 0; i < 5; i++)
+				{
+					createHero ();
+				}
+				break;
 		}
 		heroes.damageInterval=setInterval(function(){game.boss.damageBoss();},3000);
 	}
+	
+	function createHero (heroProperties)
+	{
+		
+		var heroNumber = heroes.length+1;
+		if (!heroProperties)
+		{
+			heroProperties = {};
+		}
+		
+		if (!heroProperties.role)
+		{
+			heroProperties.role = DPS_ROLE;
+		}
+		
+		if (!heroProperties.sprite)
+		{
+			heroProperties.sprite = ASSASSIN_SPRITE;
+		}
+		
+		//Create hero div.
+		var currentHero = document.createElement("span");
+		currentHero.id = "hero" + (heroNumber);
+		currentHero.className = "hero";
+		
+		//Create hero label.
+		var label = document.createElement ("div");
+		label.id = "hero" + (heroNumber) + "-label";
+		label.className = "hero-label";
+		
+		//Create hero healthbar.
+		var healthbar = document.createElement ("div");
+		healthbar.id = "hero" + (heroNumber) + "hb";
+		healthbar.className = "healthbar";
+		
+		var currentHealth = document.createElement("span");
+		currentHealth.id = "hero" + (heroNumber) + "hc";
+		currentHealth.className = "healthcurrent";
+		
+		var shieldBar = document.createElement("span");
+		shieldBar.id = "hero" + (heroNumber) + "shield";
+		shieldBar.className = "shield";
+		
+		//Create hero sprite based on hero number.
+		var heroSprite = document.createElement("div");
+		heroSprite.id = "hero" + (heroNumber) + "sprite";
+		
+		switch (heroProperties.sprite)
+		{
+			case WARRIOR_SPRITE:spriteName = "sprite-warrior";break;
+			case ARCHER_SPRITE:spriteName = "sprite-archer";break;
+			case NECROMANCER_SPRITE:spriteName = "sprite-necro";break;
+			case WIZARD_SPRITE:spriteName = "sprite-wizard";break;
+			case ASSASSIN_SPRITE:spriteName = "sprite-assassin";break;
+			default:;
+		}
+		
+		heroSprite.className = spriteName;
+		
+		//Configure hero variables and associate with DOM elements.
+		
+		switch (heroProperties.role)
+		{
+			case DPS_ROLE:
+				currentHero.health=100;
+				currentHero.maxHealth=100;
+				currentHero.damage = 2;
+				currentHero.defense = 1;
+				break;
+			case TANK_ROLE:
+				currentHero.health=200;
+				currentHero.maxHealth=200;
+				currentHero.damage = 1;
+				currentHero.defense = 2;
+				break;
+			case HEALER_ROLE:
+				currentHero.health=100;
+				currentHero.maxHealth=100;
+				currentHero.damage = 0;
+				currentHero.defense = 1;
+				break;
+			default:
+				currentHero.health=100;
+				currentHero.maxHealth=100;
+				currentHero.damage = 2;
+				currentHero.defense = 1;
+				break;
+		}
+
+		currentHero.healthbar=currentHealth;
+		currentHero.shieldBar = shieldBar;
+		
+		currentHero.alive = true;
+		currentHero.buffs = [];
+		currentHero.tempStats = [];
+		
+		//Add to DOM and push to array.
+		healthbar.appendChild(shieldBar);
+		healthbar.appendChild(currentHealth);
+		currentHero.appendChild(label);
+		currentHero.appendChild(healthbar);
+		currentHero.appendChild(heroSprite);
+		
+		document.getElementById("heroes").appendChild(currentHero);
+		
+		heroes.push(currentHero);
+		updateHealthbar(currentHero);
+	}
+
 	
 	//Clean up hero related DOM elements when restarting.
 	function cleanup ()
@@ -101,6 +170,7 @@ game = (function(game){
 		{
 			return;
 		}
+		damage = damage/hero.defense;
 		if (hero.buffs.length > 0)
 		{
 			for (i in hero.buffs)
