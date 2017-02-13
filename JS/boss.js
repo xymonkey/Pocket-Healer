@@ -4,17 +4,39 @@ Currently, boss data is hard-coded into a seperate function for each boss. Event
 
 game = (function(game){
 	game.boss = game.boss || {};
+	game.boss.bossTypes = game.boss.bossTypes || {};
 	
-	var boss;
+	game.boss.bossTypes.WARWYLF_BOSS = 0,
+		game.boss.bossTypes.FENRIQUE_BOSS = 1;
 	
-	function initBoss (bossToInit)
+	var boss,
+		specialAttackInterval;
+	
+	function init (bossToInit)
 	{
 		boss={};
 		boss.alive = true;
 		switch (bossToInit)
 		{
-			default:warwylfScript();
+			case game.boss.bossTypes.WARWYLF_BOSS:
+				boss.type=game.boss.bossTypes.WARWYLF_BOSS
+				game.heroes.init(boss.type);
+				warwylfScript();
+				break;
+			case game.boss.bossTypes.FENRIQUE_BOSS:
+				boss.type=game.boss.bossTypes.FENRIQUE_BOSS
+				game.heroes.init(boss.type);
+				fenriqueScript();break;
+			default:
+				boss.type=game.boss.bossTypes.WARWYLF_BOSS
+				game.heroes.init(game.boss.bossTypes.WARWYLF_BOSS);
+				warwylfScript();
 		}
+	}
+	
+	function getBossType ()
+	{
+		return boss.type;
 	}
 	
 	function warwylfScript ()
@@ -29,6 +51,7 @@ game = (function(game){
 		{
 			boss.name = "Warwylf";
 			document.getElementById("boss-label").innerHTML = boss.name;
+			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
 		}
 
 		if (game.state.isInProgress())
@@ -37,8 +60,8 @@ game = (function(game){
 			
 			if (typeof(boss.health) == "undefined")
 			{
-				boss.health = 300;
-				boss.maxHealth = 300;
+				boss.health = 400;
+				boss.maxHealth = 400;
 				boss.healthbar = document.getElementById("bosshc");
 			}
 			updateHealthbar();
@@ -61,6 +84,73 @@ game = (function(game){
 		}
 		else if (game.state.hasPlayerLost() || game.state.hasPlayerWon())
 			game.state.setReadyForRestart();
+	}
+	
+	function fenriqueScript ()
+	{
+		resetBossMessage();
+		if(typeof(boss.specialAttackTimer) == "undefined")
+		{
+			boss.specialAttackTimer = 4;
+		}
+		
+		if(typeof(boss.name) == "undefined")
+		{
+			boss.name = "Fenrique";
+			document.getElementById("boss-label").innerHTML = boss.name;
+			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
+		}
+
+		if (game.state.isInProgress())
+		{
+			var heroToDamage = game.heroes.getHeroWithThreat ();
+			
+			if (typeof(boss.health) == "undefined")
+			{
+				boss.health = 350;
+				boss.maxHealth = 350;
+				boss.healthbar = document.getElementById("bosshc");
+			}
+			updateHealthbar();
+			if (boss.specialAttackTimer != 0)
+			{
+				if(boss.specialAttackTimer == 1)
+				{
+					bossAlert(boss.name + " is getting ready to pummel a hero");
+				}
+				game.heroes.damageHero(heroToDamage,40);
+				boss.specialAttackTimer -= 1;
+			}
+			else //boss.specialAttackTimer == 0
+			{
+				bossAlert(boss.name + " unleashes pummel!");
+				setTimeout(attackTimeout, 1000, 6);
+				boss.specialAttackTimer = -1;
+			}
+			setTimeout(fenriqueScript, 3000);
+		}
+		else if (game.state.hasPlayerLost() || game.state.hasPlayerWon())
+			game.state.setReadyForRestart();
+		
+		function attackTimeout (hits)
+		{
+			console.log("pummel hits"+hits);
+			if (!boss.focusTarget)
+			{
+				boss.focusTarget = game.heroes.getRandomHero({role:game.heroes.roles.DPS_ROLE});
+			}
+			game.heroes.damageHero(boss.focusTarget, 20);
+			hits--;
+			if(hits<=0 || !game.heroes.isHeroAlive(boss.focusTarget))
+			{
+				boss.focusTarget = null;
+				boss.specialAttackTimer = 4;
+			}
+			else
+			{
+				setTimeout(attackTimeout, 1000, hits);
+			}
+		}
 	}
 	
 	function damageBoss ()
@@ -95,9 +185,16 @@ game = (function(game){
 		boss.healthbar.style.width = parseInt((boss.health/boss.maxHealth)*100) + "%";
 	}
 	
-	game.boss.init = initBoss;
+	function getBossName ()
+	{
+		return boss.name;
+	}
+	
+	game.boss.init = init;
 	game.boss.isBossAlive = isBossAlive;
 	game.boss.damageBoss = damageBoss;
+	game.boss.getBossName = getBossName;
+	game.boss.getBossType = getBossType;
 	
 	return game;
 })(game || {});
