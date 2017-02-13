@@ -15,26 +15,36 @@ game = (function(game){
 		HEALER_ROLE = 2;
 	
 	game.heroes = game.heroes || {};
-	var heroes = [];
+	game.heroes.roles = game.heroes.roles || {};
+	game.heroes.sprites = game.heroes.sprites || {};
+	var heroes = [],
+		heroWithThreat;
 	
-	function init (bossName)
+	function init (bossType)
 	{
 		var spriteName;
 		//Because arrays with references in other objects are not cleared when using "array = []", we manually set length to 0 to reset the array after starting a new game.
 		heroes.length = 0;
 		cleanup();
-		if (!bossName)
+		if (!bossType)
 		{
-			bossName = game.boss.getBossName();
+			bossName = game.boss.getBossType();
 		}
 		
-		switch (bossName)
+		switch (bossType)
 		{
-			case "Warwylf":
+			case game.boss.bossTypes.WARWYLF_BOSS:
 				for (var i = 0; i < 5; i++)
 				{
 					createHero ();
 				}
+				break;
+			case game.boss.bossTypes.FENRIQUE_BOSS:
+				assignThreat ( createHero ({role:TANK_ROLE, sprite:WARRIOR_SPRITE}) );
+				createHero ({role:DPS_ROLE, sprite:ASSASSIN_SPRITE});
+				createHero ({role:DPS_ROLE, sprite:NECROMANCER_SPRITE});
+				createHero ({role:DPS_ROLE, sprite:WIZARD_SPRITE});
+				createHero ({role:DPS_ROLE, sprite:ARCHER_SPRITE});
 				break;
 			default:
 				for (var i = 0; i < 5; i++)
@@ -48,19 +58,18 @@ game = (function(game){
 	
 	function createHero (heroProperties)
 	{
-		
 		var heroNumber = heroes.length+1;
 		if (!heroProperties)
 		{
 			heroProperties = {};
 		}
 		
-		if (!heroProperties.role)
+		if (!heroProperties.role  && typeof(heroProperties.role)=="undefined")
 		{
 			heroProperties.role = DPS_ROLE;
 		}
 		
-		if (!heroProperties.sprite)
+		if (!heroProperties.sprite  && typeof(heroProperties.sprite)=="undefined")
 		{
 			heroProperties.sprite = ASSASSIN_SPRITE;
 		}
@@ -92,7 +101,11 @@ game = (function(game){
 		var heroSprite = document.createElement("div");
 		heroSprite.id = "hero" + (heroNumber) + "sprite";
 		
-		switch (heroProperties.sprite)
+		//Configure hero variables and associate with DOM elements.
+		currentHero.sprite = heroProperties.sprite;
+		currentHero.role = heroProperties.role;
+		
+		switch (currentHero.sprite)
 		{
 			case WARRIOR_SPRITE:spriteName = "sprite-warrior";break;
 			case ARCHER_SPRITE:spriteName = "sprite-archer";break;
@@ -104,9 +117,7 @@ game = (function(game){
 		
 		heroSprite.className = spriteName;
 		
-		//Configure hero variables and associate with DOM elements.
-		
-		switch (heroProperties.role)
+		switch (currentHero.role)
 		{
 			case DPS_ROLE:
 				currentHero.health=100;
@@ -152,6 +163,7 @@ game = (function(game){
 		
 		heroes.push(currentHero);
 		updateHealthbar(currentHero);
+		return currentHero;
 	}
 
 	
@@ -162,6 +174,16 @@ game = (function(game){
 		while (heroes.firstChild) {
 			heroes.removeChild(heroes.firstChild);
 		}
+	}
+	
+	function assignThreat (hero)
+	{
+		heroWithThreat = hero;
+	}
+	
+	function getHeroWithThreat()
+	{
+		return heroWithThreat;
 	}
 	
 	function damageHero (hero, damage)
@@ -231,6 +253,10 @@ game = (function(game){
 				}
 			}
 		}
+		if (hero == heroWithThreat && !game.heroes.areHeroesDead())
+		{
+			assignThreat(getRandomHero([{role:TANK_ROLE}, {role:DPS_ROLE}]));
+		}
 		game.state.checkGameState();
 	}
 	
@@ -282,9 +308,29 @@ game = (function(game){
 		return heroes.length;
 	}
 	
-	function getRandomHero ()
+	//Gets a random hero based on a passed array of roles (any role can be chosen if no role is passed). Priority for chosen character will be adjusted according to the order the roles are passed (i.e., tank will take priority if passed first).
+	function getRandomHero (targetRoles)
 	{
-		var heroToDamage
+		var heroToDamage, heroesByRole = [];
+		
+		if (targetRoles)
+		{
+			for (i in targetRoles)
+			{
+				for (j in heroes)
+				{
+					if (heroes[j].alive && heroes[j].role == targetRoles[i])
+					{
+						heroesByRole.push(heroes[j]);
+					}
+				}
+				if (heroesByRole.length > 0)
+				{
+					heroToDamage = game.util.getRandomInt (0, heroesByRole.length);
+					return heroesByRole[heroToDamage];
+				}
+			}
+		}
 		do
 		{
 			heroToDamage = game.util.getRandomInt (0, getNumberOfHeroes());
@@ -375,6 +421,16 @@ game = (function(game){
 		updateHealthbar (hero);
 		updateShieldBar(hero);
 	}
+	game.heroes.sprites.WARRIOR_SPRITE = WARRIOR_SPRITE,
+		game.heroes.sprites.ARCHER_SPRITE = ARCHER_SPRITE,
+		game.heroes.sprites.NECROMANCER_SPRITE = NECROMANCER_SPRITE,
+		game.heroes.sprites.WIZARD_SPRITE = WIZARD_SPRITE,
+		game.heroes.sprites.ASSASSIN_SPRITE = ASSASSIN_SPRITE;
+		
+	//Role types.
+	game.heroes.roles.DPS_ROLE = DPS_ROLE,
+		game.heroes.roles.TANK_ROLE = TANK_ROLE,
+		game.heroes.roles.HEALER_ROLE = HEALER_ROLE;
 	
 	game.heroes.init = init;
 	game.heroes.cleanup = cleanup;
@@ -389,6 +445,8 @@ game = (function(game){
 	game.heroes.applyBuff = applyBuff;
 	game.heroes.updateStats = updateStats;
 	game.heroes.getRandomHero = getRandomHero;
+	game.heroes.getHeroWithThreat = getHeroWithThreat;
+	game.heroes.assignThreat = assignThreat;
 	
 	return game;
 })(game||{});

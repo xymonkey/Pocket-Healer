@@ -193,8 +193,46 @@
 	display:none;
 }
 
+#boss-selection-screen{
+	display:none;
+}
+
 #how-to-play-text{
 	width:600px;
+}
+
+#bosses-to-select{
+	width:600px;
+	display:block;
+}
+
+.boss-select{
+	padding-bottom:10px;
+}
+
+.boss-description{
+	margin:auto;
+	width:300px;
+}
+
+.boss-select-button{
+	width:64px;
+	height:64px;
+	background-size:64px 64px;
+	background-repeat:no-repeat;
+	background-position:center;
+	margin:auto;
+	padding:4px;
+	border:1px solid #000;
+	border-radius:5px;
+	cursor:pointer;
+}
+
+#warwylf-button{
+	background-image:url("../Images/Char/warwylf.gif");
+}
+#fenrique-button{
+	background-image:url("../Images/Char/warwylf.gif");
 }
 
 .sprite-warrior{
