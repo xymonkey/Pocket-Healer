@@ -4,20 +4,25 @@ var game = {};
 
 game = (function(game){
 
-	var numHeroes = 5;
+	game.currentBoss = game.currentBoss || {};
 
-	function init ()
+	function init (bossToInit)
 	{
 		if (game.state.isBeforeInit() || game.state.isReadyForRestart())
 		{		
+			if (!bossToInit)
+			{
+				bossToInit = game.boss.bossTypes.WARWYLF_BOSS
+			}
+			game.currentBoss = bossToInit;
 			game.state.init();
 			game.state.hideGameOverDisplay();
 			
 			game.player.init();
 			game.state.setInProgress();
-			game.heroes.init(numHeroes);
+			//Heroes are now initialized in boss.js based on boss type.
 			game.skills.init();
-			game.boss.init();
+			game.boss.init(bossToInit);
 			game.input.init();
 			
 			/*Skill key assignment is handled manually here. Later, this will be handled by a skill selection screen.*/
@@ -35,9 +40,11 @@ game = (function(game){
 
 /* Menu navigation is mainly handled here since this will fire when the DOM is ready. These calls should be moved to more appropriate locations in future iterations.*/
 $(function(){
-	$("#start-button").click(function(){game.init();});
+	$("#start-button").click(function(){$("#boss-selection-screen").show();$("#start-menu").hide();});
+	$("#warwylf-button").click(function(){$("#boss-selection-screen").hide();game.init(game.boss.bossTypes.WARWYLF_BOSS);});
+	$("#fenrique-button").click(function(){$("#boss-selection-screen").hide();game.init(game.boss.bossTypes.FENRIQUE_BOSS);});
 	$("#how-to-play-button").click(function(){$("#how-to-play").show();$("#game").hide();$("#start-menu").hide();});
 	$("#help-back-to-start").click(function(){$("#how-to-play").hide();$("#game").hide();$("#start-menu").show();});
-	$("#restart").click(function(){game.init();});
+	$("#restart").click(function(){game.init(game.currentBoss);});
 	$("#game-back-to-start").click(function(){$("#how-to-play").hide();$("#game").hide();$("#start-menu").show();});
 });
