@@ -98,7 +98,7 @@ game = (function(game){
 		{
 			boss.name = "Fenrique";
 			document.getElementById("boss-label").innerHTML = boss.name;
-			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
+			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/fenrique.gif")';
 		}
 
 		if (game.state.isInProgress())
