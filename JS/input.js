@@ -19,6 +19,11 @@ game = (function(game){
 	
 	function init ()
 	{
+		game.addOnStartEvent(onStart);
+	}
+	
+	function onStart ()
+	{
 		document.onkeypress = function (e) {
 			e = e || window.event;
 			switch (e.keyCode)

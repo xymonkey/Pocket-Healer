@@ -12,25 +12,28 @@ game = (function(game){
 	var boss,
 		specialAttackInterval;
 	
-	function init (bossToInit)
+	function init ()
 	{
 		boss={};
 		boss.alive = true;
+		onStart();
+	}
+	
+	function onStart ()
+	{
+		var bossToInit = game.getCurrentBoss();
 		switch (bossToInit)
 		{
 			case game.boss.bossTypes.WARWYLF_BOSS:
-				boss.type=game.boss.bossTypes.WARWYLF_BOSS
-				game.heroes.init(boss.type);
-				warwylfScript();
+				boss.type=game.boss.bossTypes.WARWYLF_BOSS;
+				game.heroes.addOnFinishedInitEvent (warwylfScript);
 				break;
 			case game.boss.bossTypes.FENRIQUE_BOSS:
 				boss.type=game.boss.bossTypes.FENRIQUE_BOSS
-				game.heroes.init(boss.type);
-				fenriqueScript();break;
+				game.heroes.addOnFinishedInitEvent (fenriqueScript);
 			default:
 				boss.type=game.boss.bossTypes.WARWYLF_BOSS
-				game.heroes.init(game.boss.bossTypes.WARWYLF_BOSS);
-				warwylfScript();
+				game.heroes.addOnFinishedInitEvent (warwylfScript);
 		}
 	}
 	
@@ -42,28 +45,26 @@ game = (function(game){
 	function warwylfScript ()
 	{
 		resetBossMessage();
-		if(typeof(boss.specialAttackTimer) == "undefined")
-		{
-			boss.specialAttackTimer = 4;
-		}
-		
-		if(typeof(boss.name) == "undefined")
-		{
-			boss.name = "Warwylf";
-			document.getElementById("boss-label").innerHTML = boss.name;
-			document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
-		}
-
 		if (game.state.isInProgress())
 		{
-			var heroToDamage = game.heroes.getRandomHero ();
-			
+			if(typeof(boss.specialAttackTimer) == "undefined")
+			{
+				boss.specialAttackTimer = 4;
+			}
+			if(typeof(boss.name) == "undefined")
+			{
+				boss.name = "Warwylf";
+				document.getElementById("boss-label").innerHTML = boss.name;
+				document.getElementById("boss-sprite").style.backgroundImage = 'url("./Images/Char/warwylf.gif")';
+			}
 			if (typeof(boss.health) == "undefined")
 			{
 				boss.health = 400;
 				boss.maxHealth = 400;
 				boss.healthbar = document.getElementById("bosshc");
 			}
+			var heroToDamage = game.heroes.getRandomHero ();
+			
 			updateHealthbar();
 			if (boss.specialAttackTimer > 0)
 			{
@@ -134,7 +135,6 @@ game = (function(game){
 		
 		function attackTimeout (hits)
 		{
-			console.log("pummel hits"+hits);
 			if (!boss.focusTarget)
 			{
 				boss.focusTarget = game.heroes.getRandomHero({role:game.heroes.roles.DPS_ROLE});
