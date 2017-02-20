@@ -18,14 +18,23 @@ game = (function(game){
 	game.heroes.roles = game.heroes.roles || {};
 	game.heroes.sprites = game.heroes.sprites || {};
 	var heroes = [],
-		heroWithThreat;
+		heroWithThreat,
+		onFinishedInitEvents;
 	
-	function init (bossType)
+	function init ()
 	{
+		onFinishedInitEvents = [];
+		game.addOnStartEvent (onStart);
+	}
+	
+	function onStart ()
+	{
+		var bossType = game.getCurrentBoss();
 		var spriteName;
 		//Because arrays with references in other objects are not cleared when using "array = []", we manually set length to 0 to reset the array after starting a new game.
 		heroes.length = 0;
 		cleanup();
+		//This may not be needed since we're just getting the current boss from the game reference now.
 		if (!bossType)
 		{
 			bossName = game.boss.getBossType();
@@ -54,6 +63,25 @@ game = (function(game){
 				break;
 		}
 		heroes.damageInterval=setInterval(function(){game.boss.damageBoss();},3000);
+		onFinishedInit ();
+	}
+	
+	function onFinishedInit ()
+	{
+		//Since we're pushing the events to the array like a stack, the elements occur in the reverse order that we pushed while iterating.
+		//Since we need to fire the last event (first pushed) first, we start with the last element and work our way down.
+		for (var i = onFinishedInitEvents.length-1; i >= 0; i--)
+		{
+			onFinishedInitEvents[i]();
+		}
+	}
+	
+	function addOnFinishedInitEvent (callback)
+	{
+		if (typeof (callback) === "function")
+		{
+			onFinishedInitEvents.push(callback);
+		}
 	}
 	
 	function createHero (heroProperties)
@@ -447,6 +475,7 @@ game = (function(game){
 	game.heroes.getRandomHero = getRandomHero;
 	game.heroes.getHeroWithThreat = getHeroWithThreat;
 	game.heroes.assignThreat = assignThreat;
+	game.heroes.addOnFinishedInitEvent = addOnFinishedInitEvent;
 	
 	return game;
 })(game||{});

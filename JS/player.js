@@ -8,6 +8,11 @@ game = (function(game){
 	
 	function init ()
 	{
+		game.addOnStartEvent(onStart);
+	}
+	
+	function onStart()
+	{
 		castBar = document.getElementById("currentcb");
 		castBar.casting = false;
 			

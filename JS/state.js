@@ -10,18 +10,54 @@ game = (function(game){
 	game.state = game.state || {};
 	
 	var state = BEFORE_INIT;
+	
+	//Here, the j in the variable names denote that these are jQuery object references instead of straight DOM references.
 	var gameOverDisplay,
-		gameOverMessage;
+		gameOverMessage,
+		jRestartButton,
+		jGameBackToStartButton,
+		jGameMenu,
+		jHowToPlayMenu,
+		jStartMenu;
 	
 	function init ()
 	{
 		gameOverDisplay = document.getElementById("game-over");
 		gameOverMessage = document.getElementById("game-over-message");
-		$("#game").show();
-		$("#how-to-play").hide();
-		$("#start-menu").hide();
-		$("#restart").click(function(){game.init();});
-		$("#game-back-to-start").click(function(){$("#how-to-play").hide();$("#game").hide;$("#start-menu").show;});
+		jRestartButton = $("#restart");
+		jGameBackToStartButton = $("#game-back-to-start");
+		jGameMenu = $("#game");
+		jHowToPlayMenu = $("#how-to-play");
+		jStartMenu = $("#start-menu")
+		
+		jRestartButton.click(function(){restartGame();});
+		backToStartMenu ();
+		
+		//This may not work since we may not be able to access the helper functions from the game context. If that happens, call everything directly instead of using helpers or pass a this reference.
+		game.addOnStartEvent(onStart);
+	}
+	
+	function onStart ()
+	{
+		showGameMenu();
+		hideGameOverDisplay();
+	}
+	
+	function restartGame ()
+	{
+		game.init(game.getCurrentBoss);game.start();
+	}
+	
+	function showGameMenu ()
+	{
+		jGameMenu.show();
+		jHowToPlayMenu.hide();
+		jStartMenu.hide();
+	}
+	
+	function backToStartMenu ()
+	{
+		jGameBackToStartButton.click(function(){jHowToPlayMenu.hide();jGameMenu.hide;jStartMenu.show;});
 	}
 	
 	function isBeforeInit ()
