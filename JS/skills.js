@@ -3,6 +3,9 @@ game = (function(game){
 	/* The assignment of the skill objects to the global game object is somehwat covoluted. The ultimate goal is that we only want
 	   to expose the "cast" function and tooltip info for each skill to the global game object. */
 	game.skills = game.skills||{};
+	
+	game.skills.NUM_SKILL_BUTTONS = 4;
+	
 	game.skills.heal = game.skills.heal||{};
 	game.skills.renew = game.skills.renew||{};
 	game.skills.flashHeal = game.skills.flashHeal||{};
@@ -26,6 +29,7 @@ game = (function(game){
 		var cooldown = skillToCopy.cooldown || 0;
 		var onCooldown = skillToCopy.onCooldown || false;
 		var castTime = skillToCopy.castTime || 0;
+		var icon = skillToCopy.icon || "";
 		
 		//This should be removed later and moved to a setSkillCooldownBar function or something along those lines.
 		var cooldownBar = skillToCopy.cooldownBar || null;
@@ -35,6 +39,10 @@ game = (function(game){
 		var tooltipName = skillToCopy.tooltipName || "";
 		var tooltipDescription = skillToCopy.tooltipDescription || "";
 		
+		var duration = skillToCopy.duration || null;
+		var intervalMagnitude = skillToCopy.intervalMagnitude || null;
+		var intervalTick = skillToCopy.intervalTick || null;
+		
 		this.cast = skillToCopy.cast || null;
 		
 		this.showTooltip = function(skillLocation)
@@ -42,11 +50,72 @@ game = (function(game){
 			tooltipNameElement.innerHTML = tooltipName;
 			tooltipDescriptionElement.innerHTML = tooltipDescription;
 			tooltipElement.style.display = "block";
-			tooltipElement.style.left = skillLocation.x;
-			tooltipElement.style.top = skillLocation.y
+			console.log(skillLocation.x);
+			tooltipElement.style.left = skillLocation.x + "px";
+			tooltipElement.style.top = skillLocation.y + "px";
 		};
+		
+		this.getIntervalMagnitude = function(){return intervalMagnitude;};
+		
+		this.getDuration = function(){return duration;};
+		
+		this.getIntervalTick = function(){return intervalTick;};
 
+		this.getMagnitude = function(){return magnitude;};
+		
+		this.getManaCost = function(){return manaCost;};
+		
+		this.getCastTime = function(){return castTime;};
+		
+		this.getCooldown = function(){return cooldown;};
+		
+		this.isOnCooldown = function(){return onCooldown;};
+		
+		this.setOnCooldown = function()
+		{
+			onCooldown = true; 
+			setTimeout(function(){onCooldown=false;}, cooldown);
+		};
+		
 		this.hideTooltip = function(){tooltipElement.style.display = "none";};
+		
+		this.getIcon = function(){return icon};
+		
+		this.setCooldownBar = function (cooldownBar)
+		{
+			if (cooldownBar.className.indexOf("skill-cooldown") != -1)
+			{
+				this.cooldownBar = cooldownBar;
+			}
+		};
+		
+		this.animateCooldown = function (currentDuration)
+		{
+			var delta = this.getCooldown()/10;
+			
+			//skillReference needed to call animateCooldown recursively in timeout.
+			var skillReference = this;
+			if (!currentDuration)
+				currentDuration = 0;
+			if (this.getCooldown() - currentDuration < delta)
+			{
+				currentDuration = this.getCooldown();
+			}
+			else
+			{
+				currentDuration += delta;
+			}
+			this.cooldownBar.style.height = parseInt((currentDuration/this.getCooldown())*100) + "%";
+			this.cooldownBar.style.marginTop = parseInt(100-(currentDuration/this.getCooldown())*100) + "%";
+			if (currentDuration != this.getCooldown())
+			{
+				setTimeout(function(){skillReference.animateCooldown(currentDuration);}, delta);
+			}
+			else
+			{
+				this.cooldownBar.style.height = "0%";
+			}
+		};
 	}		
 	
 	function init ()
@@ -65,59 +134,56 @@ game = (function(game){
 		
 		// TODO: enable us to pass the element (or at least the skill number) we want to assign this to.
 		// This should be tied to game.input.assignSkillToButton.
-		skills.heal.cooldownBar=document.getElementById("skill1cooldown");
 		
 		skills.heal.manaCost=10;
 		skills.heal.magnitude=30;
 		skills.heal.tooltipName = "Heal";
 		
+		skills.heal.icon = "url(./Images/Icons/heal-sky-3.png)"
+		
 		// This is OK for now, but if we want to be able to change these values later, we may need to adjust how we define the tooltip.
 		skills.heal.tooltipDescription = "Heals a target for "+skills.heal.magnitude+" HP.<br/><br/>Cast time:"+skills.heal.castTime/1000+"seconds";
 		
 		skills.heal.cast = heal;
-		skills.heal.animateCooldown = animateCooldown;
 		
 		// Renew: Heals a target gradually over time.
 		skills.renew={};
 		skills.renew.cooldown=4000;
 		skills.renew.onCooldown=false;
 		skills.renew.castTime=0;
-		skills.renew.cooldownBar=document.getElementById("skill2cooldown");
 		skills.renew.manaCost = 20;
 		skills.renew.intervalMagnitude=10;
 		skills.renew.intervalTick = 2000;
-		skills.renew.intervalDuration=12000;
+		skills.renew.duration=12000;
+		skills.renew.icon = "url(./Images/Icons/heal-jade-3.png)";
 		skills.renew.tooltipName = "Renew";
-		skills.renew.tooltipDescription = "Heals a target for "+skills.renew.intervalMagnitude+" HP over "+skills.renew.intervalDuration/1000+" seconds.<br/><br/>Cast time:instant.<br/>Cooldown: "+skills.renew.cooldown/1000+"seconds";
+		skills.renew.tooltipDescription = "Heals a target for "+skills.renew.intervalMagnitude+" HP over "+skills.renew.duration/1000+" seconds.<br/><br/>Cast time:instant.<br/>Cooldown: "+skills.renew.cooldown/1000+"seconds";
 		skills.renew.cast = renew;
-		skills.renew.animateCooldown = animateCooldown;
 		
 		// Flash heal: Fast casting direct heal spell.
 		skills.flashHeal={};
 		skills.flashHeal.cooldown=0;
 		skills.flashHeal.onCooldown=false;
 		skills.flashHeal.castTime=1500;
-		skills.flashHeal.cooldownBar=document.getElementById("skill3cooldown");
 		skills.flashHeal.manaCost=30;
 		skills.flashHeal.magnitude=40;
+		skills.flashHeal.icon = "url(./Images/Icons/heal-royal-3.png)";
 		skills.flashHeal.tooltipName = "Flash Heal";
 		skills.flashHeal.tooltipDescription = "Heals a target for "+skills.flashHeal.magnitude+" HP.<br/><br/>Cast time:"+skills.flashHeal.castTime/1000+"seconds";
 		skills.flashHeal.cast = flashHeal;
-		skills.flashHeal.animateCooldown = animateCooldown;
 		
 		// Shield: Places a shield on a target that takes a set amount of damage before breaking. Lasts until it breaks or expires.
 		skills.shield={};
 		skills.shield.cooldown=6000;
 		skills.shield.onCooldown=false;
 		skills.shield.castTime=0;
-		skills.shield.cooldownBar=document.getElementById("skill4cooldown");
 		skills.shield.manaCost=40;
 		skills.shield.magnitude=40;
 		skills.shield.duration=15000;
+		skills.shield.icon = "url(./Images/Icons/protect-blue-3.png)";
 		skills.shield.tooltipName = "Shield";
 		skills.shield.tooltipDescription = "Provides a shield for the target that absorbs "+skills.shield.magnitude+" HP before breaking.<br/><br/>Cast time:instant.<br/>Cooldown: "+skills.shield.cooldown/1000+"seconds";
 		skills.shield.cast = shield;
-		skills.shield.animateCooldown = animateCooldown;
 		
 		game.skills.heal = new Skill (skills.heal);
 		game.skills.renew = new Skill (skills.renew);
@@ -125,60 +191,36 @@ game = (function(game){
 		game.skills.shield = new Skill (skills.shield);
 	}
 	
-	function animateCooldown (currentDuration)
-	{
-		var delta = this.cooldown/10;
-		
-		//skillReference needed to call animateCooldown recursively in timeout.
-		var skillReference = this;
-		if (!currentDuration)
-			currentDuration = 0;
-		if (this.cooldown - currentDuration < delta)
-		{
-			currentDuration = this.cooldown;
-		}
-		else
-		{
-			currentDuration += delta;
-		}
-		this.cooldownBar.style.height = parseInt((currentDuration/this.cooldown)*100) + "%";
-		this.cooldownBar.style.marginTop = parseInt(100-(currentDuration/this.cooldown)*100) + "%";
-		if (currentDuration != this.cooldown)
-		{
-			setTimeout(function(){skillReference.animateCooldown(currentDuration);}, delta);
-		}
-		else
-		{
-			this.cooldownBar.style.height = "0%";
-		}
-	}
-	
 	//Spell cast function definitions. These functions fire when a skill is cast. If a skill places a buff on a target, the cast function will also define the buff to pass to the buff constructor and provide an effect function for the associated buff.
 
 	function heal ()
 	{
 		var target = game.input.getTarget();
-		
+		var skillReference = this;
+		console.log("heal");
 		if (!target)
 			return;
 		
 		if (!target.alive && game.state.isInProgress())
 		{
+			console.log("not alive");
 			return;
 		}
-		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > skills.heal.manaCost)
+		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > this.getManaCost())
 		{
+			console.log("casting");
 			game.input.setCastingTarget (target);
-			setTimeout(function(){game.heroes.healHero(game.input.getCastingTarget(),skills.heal.magnitude);},skills.heal.castTime);
-			game.player.fillCastBar (skills.heal.castTime);
-			game.player.updateManaBar(-skills.heal.manaCost);
-			skills.heal.animateCooldown ();
+			setTimeout(function(){game.heroes.healHero(game.input.getCastingTarget(),skillReference.getMagnitude());},this.getCastTime());
+			game.player.fillCastBar (this.getCastTime());
+			game.player.updateManaBar(-this.getManaCost());
+			this.animateCooldown ();
 		}
 	}
 
 	function flashHeal ()
 	{
 		var target = game.input.getTarget();
+		var skillReference = this;
 		
 		if (!target)
 			return;
@@ -187,19 +229,20 @@ game = (function(game){
 		{
 			return;
 		}
-		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > skills.flashHeal.manaCost)
+		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > this.getManaCost())
 		{
 			game.input.setCastingTarget(target);
-			setTimeout(function(){game.heroes.healHero(game.input.getCastingTarget(),skills.flashHeal.magnitude);},skills.flashHeal.castTime);
-			game.player.fillCastBar (skills.flashHeal.castTime);
-			game.player.updateManaBar(-skills.flashHeal.manaCost);
-			skills.flashHeal.animateCooldown ();
+			setTimeout(function(){game.heroes.healHero(game.input.getCastingTarget(),skillReference.getMagnitude());},this.getCastTime());
+			game.player.fillCastBar (this.getCastTime());
+			game.player.updateManaBar(-this.getManaCost());
+			this.animateCooldown ();
 		}
 	}
 
 	function renew ()
 	{
 		var target = game.input.getTarget();
+		var magnitude = this.getIntervalMagnitude();
 		
 		if (!target)
 			return;
@@ -208,28 +251,28 @@ game = (function(game){
 		{
 			return;
 		}
-		if (typeof(target) != "undefined" && !game.player.isCasting() && !skills.renew.onCooldown && game.player.getCurrentMana() > skills.renew.manaCost)
+		if (typeof(target) != "undefined" && !game.player.isCasting() && !this.isOnCooldown() && game.player.getCurrentMana() > this.getManaCost())
 		{
 			var buff = {};
-			buff.effectTick = skills.renew.intervalTick;
+			buff.effectTick = this.getIntervalTick();
 			buff.target = target;
-			buff.duration = skills.renew.intervalDuration;
+			buff.duration = this.getDuration();
 			buff.effect = renewEffect;
 			buff.name = "Renew"
 			buff.icon = "url(./Images/Icons/heal-jade-3.png)";
 			
 			game.heroes.applyBuff(target, buff);
 			
-			skills.renew.onCooldown=true;
-			setTimeout(function(){skills.renew.onCooldown=false;},skills.renew.cooldown);
-			skills.renew.animateCooldown ();
-			game.player.updateManaBar(-skills.renew.manaCost);
+			this.setOnCooldown();
+			this.animateCooldown();
+			game.player.updateManaBar(-this.manaCost);
 		}
 		
 		function renewEffect ()
 		{
-			var magnitude = skills.renew.intervalMagnitude;
-			game.heroes.healHero(this.getTarget(), magnitude);
+			console.log(target);
+			console.log(magnitude);
+			game.heroes.healHero(target, magnitude);
 		}
 	}
 
@@ -244,11 +287,11 @@ game = (function(game){
 		{
 			return;
 		}
-		if (typeof(target) != "undefined" && !game.player.isCasting() && !skills.shield.onCooldown && game.player.getCurrentMana() > skills.shield.manaCost)
+		if (typeof(target) != "undefined" && !game.player.isCasting() && !this.isOnCooldown() && game.player.getCurrentMana() > this.getManaCost())
 		{
 			var buff = {};
 			buff.target = target;
-			buff.duration = skills.shield.duration;
+			buff.duration = this.getDuration();
 			buff.effect = shieldEffect;
 			buff.name = "Shield";
 			buff.types = [];
@@ -256,15 +299,14 @@ game = (function(game){
 			buff.icon = "url(./Images/Icons/protect-blue-3.png)";
 			
 			buff.statBonuses = [];
-			buff.statBonuses["currentShield"] = skills.shield.magnitude;
-			buff.statBonuses["maxShield"] = skills.shield.magnitude;
+			buff.statBonuses["currentShield"] = this.getMagnitude();
+			buff.statBonuses["maxShield"] = this.getMagnitude();
 			
 			game.heroes.applyBuff(target, buff);
 			
-			skills.shield.onCooldown=true;
-			setTimeout(function(){skills.shield.onCooldown=false;},skills.shield.cooldown);
-			skills.shield.animateCooldown ();
-			game.player.updateManaBar(-skills.shield.manaCost);
+			this.setOnCooldown();
+			this.animateCooldown();
+			game.player.updateManaBar(-this.getManaCost());
 		}
 		
 		function shieldEffect ()
@@ -273,6 +315,7 @@ game = (function(game){
 	}
 
 	game.skills.init = init;
+	game.skills.Skill = Skill;
 	
 	return game;
 })(game||{});
