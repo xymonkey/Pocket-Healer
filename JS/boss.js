@@ -31,6 +31,7 @@ game = (function(game){
 			case game.boss.bossTypes.FENRIQUE_BOSS:
 				boss.type=game.boss.bossTypes.FENRIQUE_BOSS
 				game.heroes.addOnFinishedInitEvent (fenriqueScript);
+				break;
 			default:
 				boss.type=game.boss.bossTypes.WARWYLF_BOSS
 				game.heroes.addOnFinishedInitEvent (warwylfScript);

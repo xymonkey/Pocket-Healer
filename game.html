@@ -19,6 +19,7 @@
 <body>
 	<div id="start-menu">
 		<div id="start-button" class="menu-button">Start Game</div>
+		<div id="skill-select-button" class="menu-button">Select Spells</div>
 		<div id="how-to-play-button" class="menu-button">How to Play</div>
 	</div>
 	<div id="how-to-play">
@@ -44,6 +45,18 @@
 		</div>
 		<div id="help-back-to-start" class="menu-button">Back</div>
 	</div>
+	<div id="skill-selection-screen">
+		<div class="skill-select-label">Skill List</div>
+		<div id="skills-to-select"></div>
+		<div class="skill-select-label">Skill Bar</div>
+		<div id="skill-select-buttons"></div>
+		<div id="skill-select-text">
+			<p>Customize your skill bar by first selecting a skill from the list, then selecting a position for it on your skill bar.</p>
+		</div>
+		<div id="skill-select-error">
+		</div>
+		<div id="skill-select-to-start" class="menu-button">Back</div>
+	</div>
 	<div id="boss-selection-screen">
 		<div id="bosses-to-select">
 			<div id="warwylf-select" class="boss-select">
@@ -59,6 +72,7 @@
 				</div>
 			</div>
 		</div>
+		<div id="boss-back-to-start" class="menu-button">Back</div>
 	</div>
 	<div id="game">
 		<div id="boss" class="boss">
@@ -88,10 +102,10 @@
 			<div id="restart" class="menu-button">Restart?</div>
 			<div id="game-back-to-start" class="menu-button">Back to menu</div>
 		</div>
-		<div id="spell-tooltip">
-			<div id="spell-name"></div>
-			<div id="spell-description"></div>
-		</div>
+	</div>
+	<div id="spell-tooltip">
+		<div id="spell-name"></div>
+		<div id="spell-description"></div>
 	</div>
 </body>
 </html>
