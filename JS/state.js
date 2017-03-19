@@ -18,7 +18,8 @@ game = (function(game){
 		jGameBackToStartButton,
 		jGameMenu,
 		jHowToPlayMenu,
-		jStartMenu;
+		jStartMenu,
+		jSkillSelectMenu;
 	
 	function init ()
 	{
@@ -28,7 +29,8 @@ game = (function(game){
 		jGameBackToStartButton = $("#game-back-to-start");
 		jGameMenu = $("#game");
 		jHowToPlayMenu = $("#how-to-play");
-		jStartMenu = $("#start-menu")
+		jStartMenu = $("#start-menu");
+		jSkillSelectMenu = $("#skill-selection-screen");
 		
 		jRestartButton.click(function(){restartGame();});
 		backToStartMenu ();
@@ -53,6 +55,7 @@ game = (function(game){
 		jGameMenu.show();
 		jHowToPlayMenu.hide();
 		jStartMenu.hide();
+		jSkillSelectMenu.hide();
 	}
 	
 	function backToStartMenu ()
