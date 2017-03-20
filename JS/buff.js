@@ -70,7 +70,8 @@ function Buff (buff)
 	{
 		if (dispelable || dispelType.override)
 		{
-			if ((dispelType.offensive && debuff) || (dispelType.friendly && !debuff))
+			//This was reversed initially, but the current logic seems to make more sense. Friendly dispels should remove debuffs and offensive dispels should remove buffs.
+			if ((dispelType.offensive && !debuff) || (dispelType.friendly && debuff))
 			{
 				clearInterval (effectInterval);
 				clearTimeout (effectTimeout);
@@ -105,5 +106,10 @@ function Buff (buff)
 	this.isDispelled = function ()
 	{
 		return dispelled;
+	}
+	
+	this.isDebuff = function ()
+	{
+		return debuff;
 	}
 }

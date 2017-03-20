@@ -10,6 +10,7 @@ game = (function(game){
 	game.skills.renew = game.skills.renew||{};
 	game.skills.flashHeal = game.skills.flashHeal||{};
 	game.skills.shield = game.skills.shield||{};
+	game.skills.dispel = game.skills.dispel||{};
 	
 	var skills = {};
 	
@@ -50,7 +51,6 @@ game = (function(game){
 			tooltipNameElement.innerHTML = tooltipName;
 			tooltipDescriptionElement.innerHTML = tooltipDescription;
 			tooltipElement.style.display = "block";
-			console.log(skillLocation.x);
 			tooltipElement.style.left = skillLocation.x + "px";
 			tooltipElement.style.top = skillLocation.y + "px";
 		};
@@ -160,6 +160,17 @@ game = (function(game){
 		skills.renew.tooltipDescription = "Heals a target for "+skills.renew.intervalMagnitude+" HP over "+skills.renew.duration/1000+" seconds.<br/><br/>Cast time:instant.<br/>Cooldown: "+skills.renew.cooldown/1000+"seconds";
 		skills.renew.cast = renew;
 		
+		// Dispel: Remove a debuff from a target. In the future, we may add the ability for this spell to remove a friendly debuff from an enemy (we may also just make this a seperate skill).
+		skills.dispel={};
+		skills.dispel.cooldown=0;
+		skills.dispel.onCooldown=false;
+		skills.dispel.castTime=0;
+		skills.dispel.manaCost = 20;
+		skills.dispel.icon = "url(./Images/Icons/heal-jade-3.png)";
+		skills.dispel.tooltipName = "Dispel";
+		skills.dispel.tooltipDescription = "Removes a debuff from a friendly target.<br/><br/>Cast time:instant.";
+		skills.dispel.cast = dispel;
+		
 		// Flash heal: Fast casting direct heal spell.
 		skills.flashHeal={};
 		skills.flashHeal.cooldown=0;
@@ -189,6 +200,7 @@ game = (function(game){
 		game.skills.renew = new Skill (skills.renew);
 		game.skills.flashHeal = new Skill (skills.flashHeal);
 		game.skills.shield = new Skill (skills.shield);
+		game.skills.dispel = new Skill (skills.dispel);
 	}
 	
 	//Spell cast function definitions. These functions fire when a skill is cast. If a skill places a buff on a target, the cast function will also define the buff to pass to the buff constructor and provide an effect function for the associated buff.
@@ -197,18 +209,15 @@ game = (function(game){
 	{
 		var target = game.input.getTarget();
 		var skillReference = this;
-		console.log("heal");
 		if (!target)
 			return;
 		
 		if (!target.alive && game.state.isInProgress())
 		{
-			console.log("not alive");
 			return;
 		}
 		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > this.getManaCost())
 		{
-			console.log("casting");
 			game.input.setCastingTarget (target);
 			setTimeout(function(){game.heroes.healHero(game.input.getCastingTarget(),skillReference.getMagnitude());},this.getCastTime());
 			game.player.fillCastBar (this.getCastTime());
@@ -270,8 +279,6 @@ game = (function(game){
 		
 		function renewEffect ()
 		{
-			console.log(target);
-			console.log(magnitude);
 			game.heroes.healHero(target, magnitude);
 		}
 	}
@@ -311,6 +318,28 @@ game = (function(game){
 		
 		function shieldEffect ()
 		{
+		}
+	}
+	
+	function dispel ()
+	{
+		var target = game.input.getTarget();
+		var skillReference = this;
+		if (!target)
+			return;
+		
+		if (!target.alive && game.state.isInProgress())
+		{
+			return;
+		}
+		if (typeof(target) != "undefined" && !game.player.isCasting() && game.player.getCurrentMana() > this.getManaCost())
+		{
+			game.input.setCastingTarget (target);
+			
+			game.heroes.dispelBuff(target);
+			
+			game.player.updateManaBar(-this.getManaCost());
+			this.animateCooldown ();
 		}
 	}
 
