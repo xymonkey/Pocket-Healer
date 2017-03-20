@@ -191,6 +191,7 @@ game = (function(game){
 		
 		heroes.push(currentHero);
 		updateHealthbar(currentHero);
+		
 		return currentHero;
 	}
 
@@ -306,6 +307,24 @@ game = (function(game){
 		heroBuff = new Buff(buff);
 		heroBuff.applyEffect();
 		hero.buffs.push(heroBuff);
+		updateStats(hero);
+	}
+	
+	//ATM, this is only used as part of the dispel spell. 
+	//It is currently assumed that due to the nature of the spell and the fact that this is a hero method, the dispel is friendly, but there could be circumstances in the future where this is not the case.
+	function dispelBuff (hero)
+	{
+		if (hero.buffs.length > 0)
+		{
+			for (i in hero.buffs)
+			{
+				if (hero.buffs[i] && hero.buffs[i].hasOwnProperty && hero.buffs[i].isDebuff())
+				{
+					hero.buffs[i].dispel({offensive:false,friendly:true,override:false});
+					hero.buffs[i] = null;
+				}
+			}
+		}
 		updateStats(hero);
 	}
 	
@@ -471,6 +490,7 @@ game = (function(game){
 	game.heroes.damageHero = damageHero;
 	game.heroes.healHero = healHero;
 	game.heroes.applyBuff = applyBuff;
+	game.heroes.dispelBuff = dispelBuff;
 	game.heroes.updateStats = updateStats;
 	game.heroes.getRandomHero = getRandomHero;
 	game.heroes.getHeroWithThreat = getHeroWithThreat;
