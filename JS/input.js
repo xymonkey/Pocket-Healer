@@ -357,6 +357,7 @@ game = (function(game){
 	function onSkillSelectButtonClick (clickEvent)
 	{
 		var target = clickEvent.target;
+		var skillSwapError = false;
 		if (target.className == "skill-selection-button")
 		{
 			if (skillSelectButtonSelected)
@@ -369,7 +370,6 @@ game = (function(game){
 				target.skill = skillSelectButtonSelected.skill;
 				target.style.backgroundImage = skillSelectButtonSelected.skill.getIcon();
 				skillSelectButtonSelected.skill = tempSkillButton.skill;
-				console.log(skillSelectButtonSelected.skill.getIcon());
 				skillSelectButtonSelected.style.backgroundImage = tempSkillButton.skill.getIcon();
 				document.getElementById("skill-select-error").innerHTML = "";
 				
@@ -388,9 +388,7 @@ game = (function(game){
 			//TODO: add checks for unavailable skills.
 			for (let i = 0; i < jSkillSelectButtons.children().length; i++)
 			{
-				console.log(jSkillSelectButtons.children().get(i));
-				console.log(skillSelectButtonSelected.skill);
-				if (jSkillSelectButtons.children().get(i).skill == skillSelectButtonSelected.skill)
+				if (jSkillSelectButtons.children().get(i).skill == skillToSelectSelected.skill)
 				{
 					//TODO: Figure out a more robust solution for error messages. Surprisingly, this was the first one I needed.
 					document.getElementById("skill-select-error").innerHTML = "<p>Duplicate skills are not allowed.</p>";
@@ -453,9 +451,7 @@ game = (function(game){
 			//TODO: add checks for unavailable skills.
 			for (let i = 0; i < jSkillSelectButtons.children().length; i++)
 			{
-				console.log(jSkillSelectButtons.children().get(i));
-				console.log(skillSelectButtonSelected.skill);
-				if (jSkillSelectButtons.children().get(i).skill == skillSelectButtonSelected.skill)
+				if (jSkillSelectButtons.children().get(i).skill == skillToSelectSelected.skill)
 				{
 					//TODO: Figure out a more robust solution for error messages. Surprisingly, this was the first one I needed.
 					document.getElementById("skill-select-error").innerHTML = "<p>Duplicate skills are not allowed.</p>";
